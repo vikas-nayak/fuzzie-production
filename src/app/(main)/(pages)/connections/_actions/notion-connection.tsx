@@ -14,6 +14,16 @@ export const onNotionConnect = async (
 ) => {
   'use server'
   if (access_token) {
+    // First check if user exists
+    const user = await db.user.findUnique({
+      where: { clerkId: id }
+    });
+
+    if (!user) {
+      console.error('User not found in database');
+      return;
+    }
+
     //check if notion is connected
     const notion_connected = await db.notion.findFirst({
       where: {
